@@ -62,6 +62,8 @@ Add a button to create CSV from `File explorer` tab.
 ## 0.0.3
 Fix the error that was overriding the faulty csv. *(They are aside, the editor will just close)*.
 A notice will also show what went wrong with the csv.
+## 0.0.4
+Update all usage of this.file to this.app.workspace.getActiveFile(), which was breaking this plugin in Obsidian 1.4.16.
 
 ### Known issue
 Sometimes, the headers won't move, when scrolling so the content will not entirely be displayed. 

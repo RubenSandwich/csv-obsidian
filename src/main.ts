@@ -282,7 +282,7 @@ class CsvView extends TextFileView {
 					const ErrorTimeout = 5000;
 					this.loadingBar.hide();
 					if (Array.isArray(e)){
-						console.error(`Catch ${e.length > 1 ? "multiple errors" : "an error"} during the loading of the data from "${this.file.name}".`);
+						console.error(`Catch ${e.length > 1 ? "multiple errors" : "an error"} during the loading of the data from "${this.app.workspace.getActiveFile().name}".`);
 						for (const error of e) {
 							if (error.hasOwnProperty("message")){
 								console.error(error["message"], error);
@@ -294,7 +294,7 @@ class CsvView extends TextFileView {
 						}
 					} else {
 						new Notice(JSON.stringify(e),ErrorTimeout);
-						console.error(`Catch error during the loading of the data from ${this.file.name}\n`,e);
+						console.error(`Catch error during the loading of the data from ${this.app.workspace.getActiveFile().name}\n`,e);
 					}
 					this.hot?.destroy();
 					this.hot = undefined;
@@ -308,7 +308,7 @@ class CsvView extends TextFileView {
 	loadDataAsync(data: string): Promise<void> {
 		return new Promise<void>((resolve: (value: (PromiseLike<void> | void)) => void, reject: ParseError[] | any) => {
 			// for the sake of persistent settings we need to set the root element id
-			this.hot.rootElement.id = this.file.path;
+			this.hot.rootElement.id = this.app.workspace.getActiveFile().path;
 			this.hotSettings.colHeaders = true;
 
 			// strip Byte Order Mark if necessary (damn you, Excel)
@@ -360,9 +360,9 @@ class CsvView extends TextFileView {
 		const SaveNoticeTimeout = 1000;
 		try {
 			await super.save(clear);
-			new Notice(`"${this.file.name}" was saved.`,SaveNoticeTimeout);
+			new Notice(`"${this.app.workspace.getActiveFile().name}" was saved.`,SaveNoticeTimeout);
 		} catch (e) {
-			new Notice(`"${this.file.name}" couldn't be saved.`,SaveNoticeTimeout);
+			new Notice(`"${this.app.workspace.getActiveFile().name}" couldn't be saved.`,SaveNoticeTimeout);
 			throw e;
 		}
 	}
@@ -439,13 +439,13 @@ class CsvView extends TextFileView {
 				}
 			}
 		}
-		MarkdownRenderer.renderMarkdown(value, TD, this.file.path || "", this || null);
+		MarkdownRenderer.renderMarkdown(value, TD, this.app.workspace.getActiveFile()?.path || "", this || null);
 		return TD;
 	};
 
 	// gets the title of the document
 	getDisplayText() {
-		if (this.file) return this.file.basename;
+		if (this.app.workspace.getActiveFile()) return this.app.workspace.getActiveFile().basename;
 		else return "csv (no file)";
 	}
 
